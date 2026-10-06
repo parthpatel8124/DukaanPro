@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+  --font-serif: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+
+  /* Central Brand & Surface Theme Tokens (Customizable via CSS Variables) */
+  --color-brand-primary: var(--primary-brand);
+  --color-brand-hover: var(--primary-brand-hover);
+  --color-brand-light: var(--primary-brand-light);
+  --color-brand-ring: var(--primary-brand-ring);
+
+  --color-accent-green: var(--accent-emerald);
+  --color-accent-red: var(--accent-rose);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-indigo: var(--accent-indigo);
+  --color-accent-teal: var(--accent-teal);
+}
+
+@layer base {
+  :root {
+    /* ========================================================
+       🎨 DUKAANPRO CENTRALIZED THEME SYSTEM (CSS VARIABLES)
+       Change these values or set data-theme to re-theme the app
+       ======================================================== */
+
+    /* Primary Brand Theme Colors (Default: Electric Sapphire Blue #0284c7) */
+    --primary-brand: #0284c7;
+    --primary-brand-hover: #0369a1;
+    --primary-brand-light: #f0f9ff;
+    --primary-brand-ring: rgba(2, 132, 199, 0.3);
+
+    /* Semantic Financial & Status Accent Colors */
+    --accent-emerald: #10b981;
+    --accent-rose: #f43f5e;
+    --accent-amber: #f59e0b;
+    --accent-indigo: #6366f1;
+    --accent-teal: #0d9488;
+
+    /* Surface & Background Color Tokens */
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+  }
+
+  /* ========================================================
+     🎨 OPTIONAL READY-MADE COLOR THEME PRESETS
+     Change <html data-theme="..."> to switch entire app theme
+     ======================================================== */
+  [data-theme="emerald"] {
+    --primary-brand: #059669;
+    --primary-brand-hover: #047857;
+    --primary-brand-light: #ecfdf5;
+    --primary-brand-ring: rgba(5, 150, 105, 0.3);
+  }
+
+  [data-theme="purple"] {
+    --primary-brand: #7c3aed;
+    --primary-brand-hover: #6d28d9;
+    --primary-brand-light: #f5f3ff;
+    --primary-brand-ring: rgba(124, 58, 237, 0.3);
+  }
+
+  [data-theme="amber"] {
+    --primary-brand: #d97706;
+    --primary-brand-hover: #b45309;
+    --primary-brand-light: #fffbeb;
+    --primary-brand-ring: rgba(217, 119, 6, 0.3);
+  }
+
+  [data-theme="indigo"] {
+    --primary-brand: #4f46e5;
+    --primary-brand-hover: #4338ca;
+    --primary-brand-light: #eef2ff;
+    --primary-brand-ring: rgba(79, 70, 229, 0.3);
+  }
+
+  [data-theme="teal"] {
+    --primary-brand: #0d9488;
+    --primary-brand-hover: #0f766e;
+    --primary-brand-light: #f0fdfa;
+    --primary-brand-ring: rgba(13, 148, 136, 0.3);
+  }
+
+  .dark {
+    /* Dark Mode Theme Overrides */
+    --primary-brand: #0284c7;
+    --primary-brand-hover: #0369a1;
+    --primary-brand-light: rgba(2, 132, 199, 0.15);
+    --primary-brand-ring: rgba(2, 132, 199, 0.4);
+
+    --accent-emerald: #10b981;
+    --accent-rose: #f43f5e;
+    --accent-amber: #fbbf24;
+    --accent-indigo: #0284c7;
+    --accent-teal: #14b8a6;
+
+    --bg-main: #0b0f17;
+    --bg-card: #111827;
+    --border-color: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+  }
+
+  *,
+  ::before,
+  ::after,
+  html,
+  body,
+  button,
+  input,
+  select,
+  textarea {
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif !important;
+  }
+
+  /* Global font-weight refinement: Soften heavy weights for clean, premium readability */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600 !important;
+    letter-spacing: -0.02em;
+  }
+
+  .font-black {
+    font-weight: 700 !important;
+  }
+
+  .font-extrabold {
+    font-weight: 600 !important;
+  }
+
+  .font-bold {
+    font-weight: 600 !important;
+  }
+
+  .font-semibold {
+    font-weight: 500 !important;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Premium Card & Modern Utilities */
+.saas-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.saas-card:hover {
+  border-color: var(--primary-brand-ring);
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  transform: translateY(-1px);
+}
+
+/* Lighter Primary Blue Button Gradient Across All Pages */
+.btn-gradient-primary,
+.btn-gradient-blue {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gradient-primary:hover,
+.btn-gradient-blue:hover {
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+  transform: translateY(-1px);
+}
+
+.btn-gradient-primary:active,
+.btn-gradient-blue:active {
+  transform: translateY(0);
+}
+
+/* Responsive Touch Target Utility */
+.touch-target {
+  min-height: 44px;
+}
+
+/* Smooth Fade Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* ============================================================
+   ✨ INTERACTIVE MICRO-ANIMATIONS & SHIMMER LOADING
+   ============================================================ */
+
+/* Skeleton Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.6) 25%,
+    rgba(241, 245, 249, 0.95) 50%,
+    rgba(226, 232, 240, 0.6) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 12px;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.6) 25%,
+    rgba(51, 65, 85, 0.95) 50%,
+    rgba(30, 41, 59, 0.6) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 12px;
+}
+
+/* Interactive Card Lift physics */
+.interactive-card {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.interactive-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -4px rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.35);
+}
+
+.dark .interactive-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -4px rgba(2, 132, 199, 0.25);
+  border-color: rgba(2, 132, 199, 0.45);
+}

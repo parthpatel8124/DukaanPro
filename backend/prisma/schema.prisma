@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  passwordHash     String?
+  fullName         String
+  phone            String?
+  role             String    @default("SHOP_OWNER") // SUPER_ADMIN or SHOP_OWNER
+  status           String    @default("ACTIVE") // ACTIVE or SUSPENDED
+  storeId          String?
+  store            Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  googleId         String?   @unique
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Store {
+  id               String   @id @default(uuid())
+  name             String   @default("KISHAN")
+  tagline          String?  @default("ELECTRONICS")
+  logoUrl          String?  // Base64 shop logo image
+  gstin            String?  @default("24AUJPP7785L1ZR")
+  phone            String?  @default("9974127474")
+  address          String?  @default("Bazar Street")
+  city             String?  @default("VALOD")
+  district         String?  @default("Tapi")
+  state            String?  @default("Gujarat")
+  pincode          String?  @default("394640")
+  jurisdiction     String?  @default("VALOD")
+  terms            String?  @default("Warranty to customer is directly from manufacturers. Dealer is not responsible to customer in any way. Goods once sold will not be taken back or exchanged.")
+  status           String   @default("ACTIVE") // ACTIVE or SUSPENDED
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  users            User[]
+}
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  logoUrl   String?  // Base64 or URL for brand logo
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  iconName     String?  @default("Package")
+  description  String?
+  hsnCode      String?  @default("8517")
+  gstRate      Float    @default(18)
+  trackingType String   @default("SERIALIZED") // SERIALIZED or QUANTITY
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model TaxSlab {
+  id          String   @id @default(uuid())
+  name        String   // e.g. "GST 18% Standard"
+  gstRate     Float    @unique // e.g. 18
+  cgstRate    Float    // e.g. 9
+  sgstRate    Float    // e.g. 9
+  hsnCode     String?  @default("8517")
+  description String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Customer {
+  id               String          @id @default(uuid())
+  fullName         String
+  mobileNumber     String          @unique
+  address          String?
+  city             String?         @default("VALOD")
+  state            String?         @default("Gujarat")
+  totalOutstanding Float           @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  finances         FinanceRecord[]
+  sales            Sale[]
+}
+
+model Supplier {
+  id                 String   @id @default(uuid())
+  companyName        String
+  contactName        String?
+  phone              String   @unique
+  email              String?
+  address            String?
+  gstin              String?
+  outstandingBalance Float    @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Product {
+  id             String   @id @default(uuid())
+  name           String
+  brand          String
+  category       String   @default("Mobile") // Mobile, Charger, Cable, TV, AC, etc.
+  isMobile       Boolean  @default(false)
+  trackingType   String   @default("SERIALIZED") // SERIALIZED or QUANTITY
+  sku            String?  @unique
+  hsnCode        String?  @default("8517")
+  gstRate        Float    @default(18)
+  purchasePrice  Float
+  sellingPrice   Float
+  stockQuantity  Int      @default(0)
+  minStockAlert  Int      @default(5)
+  warrantyMonths Int      @default(12)
+  storage        String?  // e.g. 256GB / 8GB / 55-inch / 1.5 Ton
+  color          String?  // e.g. Titanium Natural
+  imei           String?  // Legacy (use Device table for new items)
+  supplierName   String?
+  imageUrl       String?  // For product photos
+  status         String   @default("IN_STOCK")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  devices        Device[]
+}
+
+model Device {
+  id             String   @id @default(uuid())
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imei1          String   @unique
+  imei2          String?
+  color          String?
+  ram            String?
+  storage        String?
+  purchasePrice  Float?
+  sellingPrice   Float?
+  supplierName   String?
+  purchaseDate   String?
+  warrantyExpiry String?
+  imageUrl       String?
+  status         String   @default("AVAILABLE") // AVAILABLE, SOLD, DAMAGED
+  barcode        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model FinanceRecord {
+  id                       String           @id @default(uuid())
+  customerId               String
+  customer                 Customer         @relation(fields: [customerId], references: [id])
+  customerName             String
+  customerPhone            String
+  address                  String?
+  productDetails           String
+  purchaseDate             String
+  totalProductPrice        Float
+  downPayment              Float            @default(0)
+  interestAmount           Float            @default(0)
+  principalRemaining       Float
+  interestRateMonthly      Float            @default(1.5)
+  totalInterestAccumulated Float            @default(0)
+  totalPaid                Float            @default(0)
+  currentBalance           Float
+  status                   String           @default("ACTIVE")
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+  payments                 FinancePayment[]
+}
+
+model FinancePayment {
+  id            String        @id @default(uuid())
+  financeId     String
+  finance       FinanceRecord @relation(fields: [financeId], references: [id], onDelete: Cascade)
+  receiptNo     String
+  amount        Float
+  paymentDate   String
+  paymentMethod String        @default("UPI")
+  notes         String?
+  createdAt     DateTime      @default(now())
+}
+
+model CashBookEntry {
+  id        String   @id @default(uuid())
+  type      String
+  category  String
+  amount    Float
+  notes     String?
+  date      String
+  createdAt DateTime @default(now())
+}
+
+model Sale {
+  id            String     @id @default(uuid())
+  invoiceNo     String     @unique
+  customerId    String?
+  customer      Customer?  @relation(fields: [customerId], references: [id])
+  customerName  String
+  customerPhone String
+  subTotal      Float
+  gstTotal      Float
+  discount      Float      @default(0)
+  grandTotal    Float
+  paidAmount    Float      @default(0)
+  dueAmount     Float      @default(0)
+  paymentMethod String     @default("UPI")
+  saleDate      String
+  isGstInvoice  Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  items         SaleItem[]
+}
+
+model SaleItem {
+  id          String @id @default(uuid())
+  saleId      String
+  sale        Sale   @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productName String
+  quantity    Int
+  unitPrice   Float
+  gstRate     Float  @default(18)
+  total       Float
+  imei        String?
+}
